@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Bleacher Generator</title>
+<style>
+  :root { color-scheme: light dark; }
+  * { box-sizing: border-box; }
+  body {
+    font-family: -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    font-size: 13px; margin: 0; padding: 16px;
+  }
+  h1 { font-size: 15px; margin: 0 0 12px; }
+  fieldset { border: 1px solid #8884; border-radius: 6px; margin: 0 0 12px; padding: 10px 12px; }
+  legend { font-weight: 600; padding: 0 4px; }
+  .row { display: flex; align-items: center; gap: 8px; margin: 6px 0; }
+  .row label { flex: 1; }
+  .row input[type=text], .row select { flex: 0 0 130px; padding: 4px 6px; }
+  .row .unit { flex: 0 0 30px; color: #888; }
+  .hint { color: #888; font-size: 12px; margin: 4px 0 0; }
+  .notice {
+    border: 1px solid #b8860b66; background: #b8860b14; border-radius: 6px;
+    padding: 8px 10px; font-size: 12px; margin: 0 0 12px;
+  }
+  .buttons { display: flex; justify-content: flex-end; gap: 8px; margin-top: 14px; }
+  button { padding: 6px 16px; }
+</style>
+</head>
+<body>
+  <h1>Bleacher Generator</h1>
+
+  <fieldset>
+    <legend>Capacity &amp; placement</legend>
+    <div class="row">
+      <label for="capacity">Target seating capacity</label>
+      <input type="text" id="capacity" value="200">
+      <span class="unit">seats</span>
+    </div>
+    <div class="row">
+      <label for="available_length">Available seating length</label>
+      <input type="text" id="available_length" value="60">
+      <span class="unit">ft</span>
+    </div>
+    <div class="check" style="display:flex;align-items:center;gap:6px;margin:6px 0;">
+      <input type="checkbox" id="side_far" checked>
+      <label for="side_far">Bank on far sideline</label>
+    </div>
+    <div class="check" style="display:flex;align-items:center;gap:6px;margin:6px 0;">
+      <input type="checkbox" id="side_near">
+      <label for="side_near">Bank on near sideline</label>
+    </div>
+    <div class="row">
+      <label for="runoff">Run-off position</label>
+      <select id="runoff">
+        <option value="beyond">Beyond run-off</option>
+        <option value="within">Within run-off</option>
+      </select>
+      <span class="unit"></span>
+    </div>
+    <div class="row">
+      <label for="frame_type">Frame type</label>
+      <select id="frame_type">
+        <option value="telescopic">Telescopic</option>
+        <option value="fixed">Fixed</option>
+      </select>
+      <span class="unit"></span>
+    </div>
+    <p class="hint">Pick one or both sidelines — with both checked, the target
+    capacity splits evenly between two matching banks. "Within run-off" tucks
+    each bank inside the court's side clearance (back on the envelope edge);
+    "beyond" keeps it outside with the open front row on the edge. Warnings
+    appear if a bank is deeper than its side's margin. With neither side
+    checked (or no court), a single bank generates at the model origin.</p>
+    <p class="hint" id="envelope_hint">No court envelope found in this model —
+    length defaults to 60 ft and banks generate at the model origin.
+    Generate a court first to place seating against it automatically.</p>
+  </fieldset>
+
+  <fieldset>
+    <legend>Deployment (telescopic)</legend>
+    <div class="check" style="display:flex;align-items:center;gap:6px;margin:6px 0;">
+      <input type="checkbox" id="partial_config">
+      <label for="partial_config">Also generate a partially-open configuration</label>
+    </div>
+    <div class="row">
+      <label for="rows_open">Rows open when partial (blank = half)</label>
+      <input type="text" id="rows_open" placeholder="auto">
+      <span class="unit">rows</span>
+    </div>
+    <p class="hint">Both configurations share the wall line; undeployed rows
+    show as a closed stack. They land on tags "GD Bleachers - Fully Open" and
+    "GD Bleachers - Partially Open" (partial starts hidden) — toggle tags or
+    capture scenes for game vs. assembly views.</p>
+  </fieldset>
+
+  <fieldset>
+    <legend>Code assumptions (editable — shown in the summary)</legend>
+    <div class="row">
+      <label for="seat_width">Seat width per person</label>
+      <input type="text" id="seat_width" value="18">
+      <span class="unit">in</span>
+    </div>
+    <div class="row">
+      <label for="row_rise">Row rise</label>
+      <input type="text" id="row_rise" value="8">
+      <span class="unit">in</span>
+    </div>
+    <div class="row">
+      <label for="row_run">Row depth (run)</label>
+      <input type="text" id="row_run" value="24">
+      <span class="unit">in</span>
+    </div>
+    <div class="row">
+      <label for="aisle_width">Aisle width</label>
+      <input type="text" id="aisle_width" value="48">
+      <span class="unit">in</span>
+    </div>
+    <div class="row">
+      <label for="max_seats_between_aisles">Max seats between aisles</label>
+      <input type="text" id="max_seats_between_aisles" value="20">
+      <span class="unit">seats</span>
+    </div>
+    <div class="row">
+      <label for="max_rows">Max rows</label>
+      <input type="text" id="max_rows" value="24">
+      <span class="unit">rows</span>
+    </div>
+    <div class="row">
+      <label for="guardrail_height">Guardrail height</label>
+      <input type="text" id="guardrail_height" value="42">
+      <span class="unit">in</span>
+    </div>
+    <div class="row">
+      <label for="wc_spaces">Wheelchair spaces (blank = IBC table)</label>
+      <input type="text" id="wc_spaces" placeholder="auto">
+      <span class="unit"></span>
+    </div>
+  </fieldset>
+
+  <div class="notice">
+    This tool surfaces its code assumptions (ICC 300 / IBC / ICC A117.1
+    starting values); it does not certify compliance. Have a licensed
+    architect verify the output.
+  </div>
+
+  <div class="buttons">
+    <button type="button" onclick="cancel()">Cancel</button>
+    <button type="button" onclick="generate()"><b>Generate</b></button>
+  </div>
+
+<script>
+  function send(action, payload) {
+    if (window.sketchup && window.sketchup[action]) {
+      window.sketchup[action](JSON.stringify(payload || {}));
+    }
+  }
+  function val(id) { return document.getElementById(id).value; }
+
+  window.prefill = function (data) {
+    if (data.available_length) {
+      document.getElementById("available_length").value = data.available_length;
+    }
+    if (data.has_envelope) {
+      document.getElementById("envelope_hint").textContent =
+        "Court envelope found (" + (data.envelope_label || "court") +
+        ") — length prefilled from the envelope; checked sidelines get a " +
+        "bank each, placed against the run-off.";
+    }
+  };
+
+  function generate() {
+    send("generate", {
+      capacity: val("capacity"),
+      available_length: val("available_length"),
+      side_far: document.getElementById("side_far").checked,
+      side_near: document.getElementById("side_near").checked,
+      runoff: val("runoff"),
+      frame_type: val("frame_type"),
+      partial_config: document.getElementById("partial_config").checked,
+      rows_open: val("rows_open"),
+      seat_width: val("seat_width"),
+      row_rise: val("row_rise"),
+      row_run: val("row_run"),
+      aisle_width: val("aisle_width"),
+      max_seats_between_aisles: val("max_seats_between_aisles"),
+      max_rows: val("max_rows"),
+      guardrail_height: val("guardrail_height"),
+      wc_spaces: val("wc_spaces")
+    });
+  }
+  function cancel() { send("cancel"); }
+  window.addEventListener("load", function () { send("ready"); });
+</script>
+</body>
+</html>

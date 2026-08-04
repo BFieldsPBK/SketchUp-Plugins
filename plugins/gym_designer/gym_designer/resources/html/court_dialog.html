@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Court Generator</title>
+<style>
+  :root { color-scheme: light dark; }
+  * { box-sizing: border-box; }
+  body {
+    font-family: -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    font-size: 13px; margin: 0; padding: 16px;
+  }
+  h1 { font-size: 15px; margin: 0 0 12px; }
+  fieldset { border: 1px solid #8884; border-radius: 6px; margin: 0 0 12px; padding: 10px 12px; }
+  legend { font-weight: 600; padding: 0 4px; }
+  .row { display: flex; align-items: center; gap: 8px; margin: 6px 0; }
+  .row label { flex: 1; }
+  .row input[type=text], .row select { flex: 0 0 130px; padding: 4px 6px; }
+  .row .unit { flex: 0 0 18px; color: #888; }
+  .check { display: flex; align-items: center; gap: 6px; margin: 6px 0; }
+  .hint { color: #888; font-size: 12px; margin: 4px 0 0; }
+  .buttons { display: flex; justify-content: flex-end; gap: 8px; margin-top: 14px; }
+  button { padding: 6px 16px; }
+</style>
+</head>
+<body>
+  <h1>Court Generator</h1>
+
+  <fieldset>
+    <legend>Court</legend>
+    <div class="row">
+      <label for="age_group">Age group</label>
+      <select id="age_group">
+        <option value="elementary">Elementary</option>
+        <option value="junior_high">Junior High</option>
+        <option value="high_school" selected>High School</option>
+        <option value="college">College (NCAA)</option>
+        <option value="nba">NBA</option>
+      </select>
+      <span class="unit"></span>
+    </div>
+    <div class="row">
+      <label for="striping">Striping</label>
+      <select id="striping">
+        <option value="geometry">3D painted lines (dimensionable)</option>
+        <option value="texture">Texture (lightweight)</option>
+      </select>
+      <span class="unit"></span>
+    </div>
+    <div class="check">
+      <input type="checkbox" id="three_point" checked>
+      <label for="three_point">Three-point line</label>
+    </div>
+    <div class="check">
+      <input type="checkbox" id="dimensions" checked>
+      <label for="dimensions">Dimension the court, margins, and envelope</label>
+    </div>
+    <p class="hint">NBA/NCAA automatically add the restricted-area arc and
+    dashed lower free-throw circles. Texture striping uses a pre-rendered
+    image per level and falls back to 3D lines if you override dimensions.</p>
+  </fieldset>
+
+  <fieldset>
+    <legend>Goals</legend>
+    <div class="check">
+      <input type="checkbox" id="goals" checked>
+      <label for="goals">Include basketball goals</label>
+    </div>
+    <div class="row">
+      <label for="goal_mount">Main goal mounting</label>
+      <select id="goal_mount">
+        <option value="ceiling">Ceiling-hung</option>
+        <option value="wall">Wall-mounted</option>
+      </select>
+      <span class="unit"></span>
+    </div>
+    <div class="row">
+      <label for="rim_height">Rim height</label>
+      <input type="text" id="rim_height" value="10">
+      <span class="unit">ft</span>
+    </div>
+    <div class="row">
+      <label for="side_goals">Side practice goals (total)</label>
+      <input type="text" id="side_goals" placeholder="0">
+      <span class="unit"></span>
+    </div>
+    <div class="row">
+      <label for="side_goal_mount">Side goal mounting</label>
+      <select id="side_goal_mount">
+        <option value="wall">Wall-mounted</option>
+        <option value="ceiling">Ceiling-hung</option>
+      </select>
+      <span class="unit"></span>
+    </div>
+    <p class="hint">Side goals split between the sidelines and mount
+    independently of the main goals (e.g. 4 wall-hung for a cross-court
+    elementary layout under ceiling-hung mains).</p>
+  </fieldset>
+
+  <fieldset>
+    <legend>Margins (run-off / safety)</legend>
+    <div class="row">
+      <label for="side_margin_near">Side-court margin — near side</label>
+      <input type="text" id="side_margin_near" value="6">
+      <span class="unit">ft</span>
+    </div>
+    <div class="row">
+      <label for="side_margin_far">Side-court margin — far side</label>
+      <input type="text" id="side_margin_far" value="6">
+      <span class="unit">ft</span>
+    </div>
+    <div class="row">
+      <label for="end_margin">End run-off margin</label>
+      <input type="text" id="end_margin" value="10">
+      <span class="unit">ft</span>
+    </div>
+    <p class="hint">Unequal side margins shift the court off-center — e.g.
+    widen one side where bleachers go. "Near" matches the bleacher tool's
+    near-sideline placement. Sports Venue Calculator recommends 3&ndash;10 ft
+    of clearance around the court.</p>
+  </fieldset>
+
+  <fieldset>
+    <legend>Overrides (blank = age-group default)</legend>
+    <div class="row">
+      <label for="court_length">Court length</label>
+      <input type="text" id="court_length">
+      <span class="unit">ft</span>
+    </div>
+    <div class="row">
+      <label for="court_width">Court width</label>
+      <input type="text" id="court_width">
+      <span class="unit">ft</span>
+    </div>
+    <div class="row">
+      <label for="three_point_radius">Three-point radius</label>
+      <input type="text" id="three_point_radius">
+      <span class="unit">ft</span>
+    </div>
+    <div class="row">
+      <label for="corner_offset">3pt line from sideline (corner)</label>
+      <input type="text" id="corner_offset">
+      <span class="unit">ft</span>
+    </div>
+    <div class="row">
+      <label for="lane_width">Lane / key width</label>
+      <input type="text" id="lane_width">
+      <span class="unit">ft</span>
+    </div>
+    <p class="hint">NBA through junior high sizes follow the Sports Venue
+    Calculator guide; Elementary follows the project's basis-of-design plan
+    (53'-10&frac12;" &times; 43'-4", three-point arc scaled from the plan).
+    Striping dimensions are common values — verify against the current
+    rulebook.</p>
+  </fieldset>
+
+  <div class="buttons">
+    <button type="button" onclick="cancel()">Cancel</button>
+    <button type="button" onclick="generate()"><b>Generate</b></button>
+  </div>
+
+<script>
+  function send(action, payload) {
+    if (window.sketchup && window.sketchup[action]) {
+      window.sketchup[action](JSON.stringify(payload || {}));
+    }
+  }
+  function val(id) { return document.getElementById(id).value; }
+  function checked(id) { return document.getElementById(id).checked; }
+
+  function generate() {
+    send("generate", {
+      age_group: val("age_group"),
+      striping: val("striping"),
+      three_point: checked("three_point"),
+      dimensions: checked("dimensions"),
+      goals: checked("goals"),
+      goal_mount: val("goal_mount"),
+      side_goal_mount: val("side_goal_mount"),
+      rim_height: val("rim_height"),
+      side_goals: val("side_goals"),
+      side_margin_near: val("side_margin_near"),
+      side_margin_far: val("side_margin_far"),
+      end_margin: val("end_margin"),
+      court_length: val("court_length"),
+      court_width: val("court_width"),
+      three_point_radius: val("three_point_radius"),
+      corner_offset: val("corner_offset"),
+      lane_width: val("lane_width")
+    });
+  }
+  function cancel() { send("cancel"); }
+  window.addEventListener("load", function () { send("ready"); });
+</script>
+</body>
+</html>

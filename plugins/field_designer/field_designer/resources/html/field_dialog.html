@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Field Generator</title>
+<style>
+  :root { color-scheme: light dark; }
+  * { box-sizing: border-box; }
+  body {
+    font-family: -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    font-size: 13px; margin: 0; padding: 16px;
+  }
+  h1 { font-size: 15px; margin: 0 0 12px; }
+  fieldset { border: 1px solid #8884; border-radius: 6px; margin: 0 0 12px; padding: 10px 12px; }
+  legend { font-weight: 600; padding: 0 4px; }
+  .row { display: flex; align-items: center; gap: 8px; margin: 6px 0; }
+  .row label { flex: 1; }
+  .row input[type=text], .row select { flex: 0 0 170px; padding: 4px 6px; }
+  .row .unit { flex: 0 0 18px; color: #888; }
+  .check { display: flex; align-items: center; gap: 6px; margin: 6px 0; }
+  .hint { color: #888; font-size: 12px; margin: 4px 0 0; }
+  .buttons { display: flex; justify-content: flex-end; gap: 8px; margin-top: 14px; }
+  button { padding: 6px 16px; }
+</style>
+</head>
+<body>
+  <h1>Field Generator</h1>
+
+  <fieldset>
+    <legend>Field</legend>
+    <div class="row">
+      <label for="preset">Sport &amp; age group</label>
+      <select id="preset">
+        <optgroup label="Soccer">
+          <option value="u6">U6 (4v4) — 30&times;20 yd</option>
+          <option value="u8">U8 (4v4) — 35&times;25 yd</option>
+          <option value="u10">U10 (7v7) — 60&times;40 yd</option>
+          <option value="u12">U12 (9v9) — 75&times;50 yd</option>
+          <option value="hs" selected>High School (NFHS) — 110&times;65 yd</option>
+          <option value="ncaa">College (NCAA) — 115&times;75 yd</option>
+          <option value="fifa">Adult (FIFA) — 105&times;68 m</option>
+        </optgroup>
+        <optgroup label="Football">
+          <option value="fb_youth">Youth — 80 yd + end zones</option>
+          <option value="fb_reg">Regulation (HS/College/Pro) — 100 yd + end zones</option>
+        </optgroup>
+      </select>
+      <span class="unit"></span>
+    </div>
+    <div class="check">
+      <input type="checkbox" id="goals" checked>
+      <label for="goals">Soccer goals (plan symbols)</label>
+    </div>
+    <div class="check">
+      <input type="checkbox" id="buildout" checked>
+      <label for="buildout">Build-out lines (7v7 only)</label>
+    </div>
+  </fieldset>
+
+  <fieldset>
+    <legend>Running track</legend>
+    <div class="row">
+      <label for="track">Wrap field in track</label>
+      <select id="track">
+        <option value="none" selected>None</option>
+        <option value="auto">Auto — regulation size for this field</option>
+        <option value="400">400 m — 8 lanes</option>
+        <option value="300">300 m — 6 lanes</option>
+      </select>
+      <span class="unit"></span>
+    </div>
+    <p class="hint">Auto picks the smallest regulation track whose infield
+    holds the selected field with 2 m of clearance: 300 m (6 lanes) for
+    small-sided fields, 400 m (8 lanes, World Athletics standard) for
+    full-size soccer and football.</p>
+  </fieldset>
+
+  <fieldset>
+    <legend>Overrides (blank = preset default)</legend>
+    <div class="row">
+      <label for="length">Field length (soccer)</label>
+      <input type="text" id="length">
+      <span class="unit">yd</span>
+    </div>
+    <div class="row">
+      <label for="width">Field width (soccer)</label>
+      <input type="text" id="width">
+      <span class="unit">yd</span>
+    </div>
+    <div class="row">
+      <label for="apron">Apron margin (no track)</label>
+      <input type="text" id="apron" value="10">
+      <span class="unit">ft</span>
+    </div>
+    <p class="hint">Soccer bodies publish legal ranges (e.g. NFHS
+    100&ndash;120 &times; 55&ndash;80 yd); use the overrides to hit a
+    site-specific size while keeping the preset's markings.</p>
+  </fieldset>
+
+  <div class="buttons">
+    <button type="button" onclick="cancel()">Cancel</button>
+    <button type="button" onclick="generate()"><b>Generate</b></button>
+  </div>
+
+<script>
+  function send(action, payload) {
+    if (window.sketchup && window.sketchup[action]) {
+      window.sketchup[action](JSON.stringify(payload || {}));
+    }
+  }
+  function val(id) { return document.getElementById(id).value; }
+  function checked(id) { return document.getElementById(id).checked; }
+
+  function generate() {
+    send("generate", {
+      preset: val("preset"),
+      track: val("track"),
+      goals: checked("goals"),
+      buildout: checked("buildout"),
+      length: val("length"),
+      width: val("width"),
+      apron: val("apron")
+    });
+  }
+  function cancel() { send("cancel"); }
+</script>
+</body>
+</html>
