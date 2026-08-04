@@ -110,7 +110,20 @@ def icon_export():
     ]
 
 
+def icon_suite():
+    """Four tool tiles on a navy base: the suite gathering the tools."""
+    return [
+        (rounded_rect(0.02, 0.02, 0.98, 0.98, 0.18), (38, 52, 84, 255)),
+        (rect(0.16, 0.16, 0.46, 0.46), ORANGE),
+        (rect(0.54, 0.16, 0.84, 0.46), TEAL),
+        (rect(0.16, 0.54, 0.46, 0.84), GREEN),
+        (rect(0.54, 0.54, 0.84, 0.84), WHITE),
+    ]
+
+
 ICONS = {
+    os.path.join("plugins", "pbk_tech_tools", "pbk_tech_tools",
+                 "resources", "icons", "suite"): icon_suite,
     os.path.join("plugins", "field_designer", "field_designer",
                  "resources", "icons", "field"): icon_field,
     os.path.join("plugins", "bsf_program_translator", "bsf_program_translator",

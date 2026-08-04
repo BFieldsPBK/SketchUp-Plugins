@@ -64,12 +64,18 @@ competition work.
 ## Installing
 
 Build the installers, then use `Extension Manager > Install Extension` in
-SketchUp for each `.rbz` (install `pbk_tech_tools` plus whichever tools
-you want):
+SketchUp for each `.rbz`, and restart SketchUp:
 
 ```
 python3 tools/package.py        # writes dist/<plugin>.rbz for every plugin
 ```
+
+Install `pbk_tech_tools.rbz` **and** each tool you want
+(`field_designer.rbz`, `gym_designer.rbz`, `bsf_program_translator.rbz`) —
+the hub provides the shared toolbar, but the buttons come from the tool
+plugins. The hub alone shows just its "About PBK Tech Tools" button, whose
+dialog lists which tools are registered — a quick way to check an
+install.
 
 ## Developing
 

@@ -13,7 +13,7 @@ require 'extensions.rb'
 module PBK
   module TechTools
     unless const_defined?(:VERSION)
-      VERSION = '0.2.0'
+      VERSION = '0.2.1'
     end
 
     unless file_loaded?(__FILE__)
