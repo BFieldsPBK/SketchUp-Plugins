@@ -1,6 +1,6 @@
 # Field Designer — loader.
 #
-# Loads the modules, then registers the command on the shared BSF Office
+# Loads the modules, then registers the command on the shared PBK Tech Tools
 # Tools toolbar (or a standalone toolbar when the suite is not installed).
 # Uses `load` rather than `require` so FieldDesigner.reload works during
 # development.
@@ -16,6 +16,8 @@ module FieldDesigner
     rules
     striping
     track
+    diamond
+    tennis
     generator
     dialog
   ].freeze
@@ -38,15 +40,15 @@ module FieldDesigner
     command.large_icon = large if File.exist?(large)
   end
 
-  # The shared BSF Office Tools registry, when the bsf_suite extension is
+  # The shared PBK Tech Tools registry, when the pbk_tech_tools extension is
   # installed alongside this one; nil otherwise (standalone install).
   def self.suite_registry
     begin
-      require "bsf_suite/registry"
+      require "pbk_tech_tools/registry"
     rescue LoadError
       return nil
     end
-    defined?(BSF::Suite::Registry) ? BSF::Suite::Registry : nil
+    defined?(PBK::TechTools::Registry) ? PBK::TechTools::Registry : nil
   end
 
   def self.build_ui

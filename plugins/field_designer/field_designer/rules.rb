@@ -2,8 +2,11 @@
 #
 # Soccer presets follow the US Youth Soccer small-sided standards (U6-U12),
 # NFHS (high school), NCAA (college), and the FIFA international pitch
-# (105 m x 68 m). Where a governing body publishes a range, the value here
-# is the commonly recommended size; every dimension can be tweaked in this
+# (105 m x 68 m). Diamond, tennis, and lacrosse presets follow the
+# governing bodies noted on each preset, cross-checked against the CDE
+# "Guide to School Site Analysis and Development" (2000) school playfield
+# diagrams. Where a governing body publishes a range, the value here is
+# the commonly recommended size; every dimension can be tweaked in this
 # file, and field length/width can be overridden per-run from the dialog.
 # As with any basis-of-design data, verify against the current rulebook
 # for competition work.
@@ -99,6 +102,74 @@ module FieldDesigner
       }
     }.freeze
 
+    # Diamond sports. `bases` is the base-path (diamond side) length;
+    # `infield_radius` is the skinned-infield arc measured from the front
+    # of the pitching rubber; `behind_home` is the clearance from home
+    # plate back to the backstop line (CDE guide: 15' elementary, 60' at
+    # the high-school diamond). `fence` (home plate to outfield fence,
+    # nil = open playfield) uses the common minimum for each level.
+    DIAMOND = {
+      "bb_elem" => {
+        label: "Baseball — Elementary Playfield",
+        # CDE guide Fig. D: 45' diamond on a 180' square with a 165'
+        # batting radius and no outfield fence.
+        bases: U.ft(45), pitching: U.ft(35),
+        behind_home: U.ft(15), infield_radius: U.ft(50),
+        fence: nil, surface_radius: U.ft(165)
+      },
+      "bb_ll" => {
+        label: "Baseball — Little League",
+        bases: U.ft(60), pitching: U.ft(46),
+        behind_home: U.ft(20), infield_radius: U.ft(50),
+        fence: U.ft(200), grass_infield: true, mound_radius: U.ft(5)
+      },
+      "bb_hs" => {
+        label: "Baseball — HS/College/Pro (90' bases)",
+        bases: U.ft(90), pitching: U.ft(60.5),
+        behind_home: U.ft(60), infield_radius: U.ft(95),
+        fence: U.ft(330), grass_infield: true, mound_radius: U.ft(9)
+      },
+      "sb_fp" => {
+        label: "Softball — Fastpitch (NFHS/NCAA)",
+        bases: U.ft(60), pitching: U.ft(43),
+        behind_home: U.ft(25), infield_radius: U.ft(60),
+        fence: U.ft(200), pitch_circle_radius: U.ft(8)
+      },
+      "sb_sp" => {
+        label: "Softball — Slow-Pitch (Adult)",
+        bases: U.ft(65), pitching: U.ft(50),
+        behind_home: U.ft(25), infield_radius: U.ft(65),
+        fence: U.ft(275), pitch_circle_radius: U.ft(8)
+      }
+    }.freeze
+
+    # Men's/boys field lacrosse (NCAA/NFHS): goals 80 yd apart (15 yd off
+    # each end line), 9' goal creases, restraining lines 20 yd upfield of
+    # each goal line, wing lines 20 yd either side of field center
+    # extending 10 yd each side of the midline.
+    LACROSSE = {
+      "lax" => {
+        label: "Lacrosse — Men/Boys (NCAA/NFHS)",
+        length: U.yd(110), width: U.yd(60),
+        goal_from_end: U.yd(15), restraining_from_goal: U.yd(20),
+        crease_radius: U.ft(9), goal_width: U.ft(6),
+        wing_from_center: U.yd(20), wing_length: U.yd(20)
+      }
+    }.freeze
+
+    # Tennis (USTA / CDE guide): 78' x 36' doubles court, 27' singles
+    # width, service lines 21' from the net; 21' clear behind baselines,
+    # 12' at the sides and between courts in a battery.
+    TENNIS = {
+      "tennis" => {
+        label: "Tennis Court",
+        court_length: U.ft(78), court_width: U.ft(36),
+        singles_width: U.ft(27), service_dist: U.ft(21),
+        end_apron: U.ft(21), side_apron: U.ft(12), court_gap: U.ft(12),
+        net_overhang: U.ft(3)
+      }
+    }.freeze
+
     TRACKS = {
       "400" => {
         label: "400 m Track (8 lanes)",
@@ -124,11 +195,28 @@ module FieldDesigner
     TRACK_CLEARANCE = U.m(2)
 
     def self.preset(key)
-      SOCCER[key] || FOOTBALL[key]
+      SOCCER[key] || FOOTBALL[key] || DIAMOND[key] || LACROSSE[key] || TENNIS[key]
     end
 
     def self.soccer?(key)
       SOCCER.key?(key)
+    end
+
+    def self.diamond?(key)
+      DIAMOND.key?(key)
+    end
+
+    def self.lacrosse?(key)
+      LACROSSE.key?(key)
+    end
+
+    def self.tennis?(key)
+      TENNIS.key?(key)
+    end
+
+    # true when the preset is a rectangular field a running track can wrap.
+    def self.trackable?(key)
+      SOCCER.key?(key) || FOOTBALL.key?(key) || LACROSSE.key?(key)
     end
 
     # Overall footprint (length, width) a field needs, including apron.

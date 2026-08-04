@@ -167,6 +167,55 @@ module FieldDesigner
       rect(entities, map, depth - lw, cy - hw + lw, depth, cy + hw - lw)
     end
 
+    # --- lacrosse ----------------------------------------------------------
+
+    def self.draw_lacrosse(entities, rules)
+      length = rules[:length]
+      width = rules[:width]
+      cy = width / 2.0
+      lw = Rules::FOOTBALL_LINE_WIDTH
+      map = mapper(length, false)
+
+      # Boundary.
+      rect(entities, map, 0, 0, length, lw)
+      rect(entities, map, 0, width - lw, length, width)
+      rect(entities, map, 0, lw, lw, width - lw)
+      rect(entities, map, length - lw, lw, length, width - lw)
+
+      # Midline and center X.
+      rect(entities, map, length / 2.0 - lw / 2.0, lw, length / 2.0 + lw / 2.0, width - lw)
+      rect(entities, map, length / 2.0 - 12.0, cy - lw / 2.0,
+           length / 2.0 + 12.0, cy + lw / 2.0)
+
+      # Wing lines: parallel to the sidelines, 20 yd out from field center,
+      # extending 10 yd each side of the midline.
+      wo = rules[:wing_from_center]
+      wl = rules[:wing_length] / 2.0
+      [cy - wo, cy + wo].each do |y|
+        rect(entities, map, length / 2.0 - wl, y - lw / 2.0,
+             length / 2.0 + wl, y + lw / 2.0)
+      end
+
+      [false, true].each { |mirror| lacrosse_end(entities, rules, mirror) }
+    end
+
+    def self.lacrosse_end(entities, rules, mirror)
+      length = rules[:length]
+      width = rules[:width]
+      cy = width / 2.0
+      lw = Rules::FOOTBALL_LINE_WIDTH
+      map = mapper(length, mirror)
+      gx = rules[:goal_from_end]
+
+      # Goal crease circle, goal line across the crease, restraining line
+      # across the full field.
+      circle(entities, map, gx, cy, rules[:crease_radius], lw)
+      gw = rules[:goal_width] / 2.0
+      rect(entities, map, gx - lw / 2.0, cy - gw, gx + lw / 2.0, cy + gw)
+      rx = gx + rules[:restraining_from_goal]
+      rect(entities, map, rx - lw / 2.0, lw, rx + lw / 2.0, width - lw)
+    end
+
     # --- football ----------------------------------------------------------
 
     def self.draw_football(entities, rules)

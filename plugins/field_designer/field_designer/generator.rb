@@ -7,14 +7,20 @@ module FieldDesigner
     DEFAULT_APRON = Units.ft(10)
 
     def self.build(data)
-      rules = Rules.preset(data["preset"].to_s)
+      key = data["preset"].to_s
+      rules = Rules.preset(key)
       return UI.messagebox("Unknown field preset.") unless rules
 
       rules = rules.dup
-      if Rules.soccer?(data["preset"].to_s)
+      if Rules.soccer?(key)
         rules[:length] = Units.parse_yd(data["length"], rules[:length])
         rules[:width] = Units.parse_yd(data["width"], rules[:width])
       end
+
+      # Diamonds and tennis batteries have their own builders; a running
+      # track only applies to rectangular fields.
+      return build_special(rules, data) unless Rules.trackable?(key)
+
       length, width = Rules.field_extent(rules)
 
       choice = data.fetch("track", "none").to_s
@@ -35,6 +41,30 @@ module FieldDesigner
       model = Sketchup.active_model
       model.start_operation("Generate #{rules[:label]}", true)
       group = build_group(model, rules, data, track, length, width)
+      model.commit_operation
+      model.selection.clear
+      model.selection.add(group)
+      group
+    rescue StandardError => e
+      model.abort_operation if model
+      UI.messagebox("Field Designer error: #{e.message}")
+      raise
+    end
+
+    # Diamond sports and tennis batteries.
+    def self.build_special(rules, data)
+      model = Sketchup.active_model
+      model.start_operation("Generate #{rules[:label]}", true)
+      group = model.active_entities.add_group
+      mats = materials(model)
+      if rules[:bases]
+        group.name = rules[:label]
+        Diamond.build(group.entities, rules, mats)
+      else
+        count = Units.parse_number(data["courts"])&.round || 1
+        count = Tennis.build(group.entities, rules, count, mats)
+        group.name = count > 1 ? "Tennis Battery (#{count} courts)" : rules[:label]
+      end
       model.commit_operation
       model.selection.clear
       model.selection.add(group)
@@ -73,6 +103,8 @@ module FieldDesigner
       lines.name = "Field Markings"
       if rules[:playing_length]
         Striping.draw_football(lines.entities, rules)
+      elsif rules[:crease_radius]
+        Striping.draw_lacrosse(lines.entities, rules)
       else
         opts = { goals: data.fetch("goals", true),
                  buildout: data.fetch("buildout", true) }
@@ -85,7 +117,12 @@ module FieldDesigner
     def self.materials(model)
       { grass: material(model, "FD Grass", [92, 145, 66]),
         line: material(model, "FD Line White", [250, 250, 250]),
-        track: material(model, "FD Track", [186, 75, 60]) }
+        track: material(model, "FD Track", [186, 75, 60]),
+        dirt: material(model, "FD Infield Dirt", [194, 148, 98]),
+        fence: material(model, "FD Fence", [52, 82, 60]),
+        court: material(model, "FD Court", [62, 110, 165]),
+        court_apron: material(model, "FD Court Apron", [96, 128, 100]),
+        net: material(model, "FD Net", [60, 60, 62]) }
     end
 
     def self.material(model, name, rgb)

@@ -44,7 +44,25 @@
           <option value="fb_youth">Youth — 80 yd + end zones</option>
           <option value="fb_reg">Regulation (HS/College/Pro) — 100 yd + end zones</option>
         </optgroup>
+        <optgroup label="Lacrosse">
+          <option value="lax">Men/Boys (NCAA/NFHS) — 110&times;60 yd</option>
+        </optgroup>
+        <optgroup label="Baseball / Softball">
+          <option value="bb_elem">Baseball — Elementary Playfield (45' bases)</option>
+          <option value="bb_ll">Baseball — Little League (60' bases)</option>
+          <option value="bb_hs">Baseball — HS/College/Pro (90' bases)</option>
+          <option value="sb_fp">Softball — Fastpitch (NFHS/NCAA)</option>
+          <option value="sb_sp">Softball — Slow-Pitch (Adult)</option>
+        </optgroup>
+        <optgroup label="Tennis">
+          <option value="tennis">Tennis Court(s) — 78&times;36 ft</option>
+        </optgroup>
       </select>
+      <span class="unit"></span>
+    </div>
+    <div class="row">
+      <label for="courts">Tennis courts in battery</label>
+      <input type="text" id="courts" value="1">
       <span class="unit"></span>
     </div>
     <div class="check">
@@ -69,10 +87,11 @@
       </select>
       <span class="unit"></span>
     </div>
-    <p class="hint">Auto picks the smallest regulation track whose infield
-    holds the selected field with 2 m of clearance: 300 m (6 lanes) for
-    small-sided fields, 400 m (8 lanes, World Athletics standard) for
-    full-size soccer and football.</p>
+    <p class="hint">Tracks wrap rectangular fields (soccer, football,
+    lacrosse) and are ignored for diamonds and tennis. Auto picks the
+    smallest regulation track whose infield holds the selected field with
+    2 m of clearance: 300 m (6 lanes) for small-sided fields, 400 m
+    (8 lanes, World Athletics standard) for full-size fields.</p>
   </fieldset>
 
   <fieldset>
@@ -117,6 +136,7 @@
       track: val("track"),
       goals: checked("goals"),
       buildout: checked("buildout"),
+      courts: val("courts"),
       length: val("length"),
       width: val("width"),
       apron: val("apron")

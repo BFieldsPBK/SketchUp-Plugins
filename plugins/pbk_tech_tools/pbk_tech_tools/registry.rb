@@ -3,7 +3,7 @@
 # Shared toolbar/menu registry.
 #
 # This file is deliberately self-contained and load-order independent: any
-# plugin may `require "bsf_suite/registry"` at load time (the SketchUp
+# plugin may `require "pbk_tech_tools/registry"` at load time (the SketchUp
 # Plugins directory is on $LOAD_PATH), and whichever plugin loads first
 # pulls the registry in. The single toolbar and Extensions submenu are
 # created lazily on first registration, so plugins can register in any
@@ -12,26 +12,26 @@
 # Usage from a plugin's UI setup:
 #
 #   begin
-#     require "bsf_suite/registry"
+#     require "pbk_tech_tools/registry"
 #   rescue LoadError
 #     nil
 #   end
-#   if defined?(BSF::Suite::Registry)
-#     BSF::Suite::Registry.add_commands("My Tool", [cmd_a, cmd_b])
+#   if defined?(PBK::TechTools::Registry)
+#     PBK::TechTools::Registry.add_commands("My Tool", [cmd_a, cmd_b])
 #   else
 #     ... build a standalone toolbar as before ...
 #   end
 
 require 'sketchup.rb'
 
-module BSF
-  module Suite
+module PBK
+  module TechTools
     module Registry
-      TOOLBAR_NAME = 'BSF Office Tools'
+      TOOLBAR_NAME = 'PBK Tech Tools'
 
       # Register a plugin's commands. Adds them to the shared toolbar
       # (separated from the previous plugin's group) and to a submenu named
-      # after the plugin under Extensions > BSF Office Tools. Returns that
+      # after the plugin under Extensions > PBK Tech Tools. Returns that
       # submenu so the caller can append extras (separators, dev items).
       # Re-registration under the same name is ignored so a plugin reload
       # does not duplicate buttons.

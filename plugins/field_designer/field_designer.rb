@@ -12,15 +12,16 @@ module FieldDesigner
   unless const_defined?(:PLUGIN_ID)
     PLUGIN_ID = "field_designer".freeze
     PLUGIN_NAME = "Field Designer".freeze
-    VERSION = "0.1.0".freeze
+    VERSION = "0.2.0".freeze
   end
 
   unless file_loaded?(__FILE__)
     loader = File.join(File.dirname(__FILE__), "field_designer", "main")
     extension = SketchupExtension.new(PLUGIN_NAME, loader)
     extension.description =
-      "Generates regulation soccer and football fields by age group, " \
-      "optionally wrapped in a regulation 400 m or 300 m running track."
+      "Generates regulation athletic fields — soccer, football, lacrosse, " \
+      "baseball/softball diamonds, and tennis courts — with soccer and " \
+      "football optionally wrapped in a regulation 400 m or 300 m track."
     extension.version = VERSION
     extension.creator = "BSF"
     extension.copyright = "#{Time.now.year}"

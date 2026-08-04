@@ -44,15 +44,15 @@ module GymDesigner
     command.large_icon = large if File.exist?(large)
   end
 
-  # The shared BSF Office Tools registry, when the bsf_suite extension is
+  # The shared PBK Tech Tools registry, when the pbk_tech_tools extension is
   # installed alongside this one; nil otherwise (standalone install).
   def self.suite_registry
     begin
-      require "bsf_suite/registry"
+      require "pbk_tech_tools/registry"
     rescue LoadError
       return nil
     end
-    defined?(BSF::Suite::Registry) ? BSF::Suite::Registry : nil
+    defined?(PBK::TechTools::Registry) ? PBK::TechTools::Registry : nil
   end
 
   def self.build_ui
