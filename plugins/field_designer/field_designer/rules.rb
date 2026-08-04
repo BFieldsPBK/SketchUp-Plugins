@@ -89,16 +89,21 @@ module FieldDesigner
       }
     }.freeze
 
+    # Goal posts: NFHS allows the 23'4" high-school width; college/pro
+    # use 18'6". The combined regulation preset uses 18'6" — widen it
+    # here for a high-school-specific field.
     FOOTBALL = {
       "fb_youth" => {
         label: "Youth Football (80-yard)",
         playing_length: U.yd(80), end_zone: U.yd(10), width: U.yd(40),
-        yard_line_interval: U.yd(5)
+        yard_line_interval: U.yd(5),
+        goal_post_width: U.ft(23) + 4
       },
       "fb_reg" => {
         label: "Football — Regulation (HS/College/Pro)",
         playing_length: U.yd(100), end_zone: U.yd(10), width: U.ft(160),
-        yard_line_interval: U.yd(5)
+        yard_line_interval: U.yd(5),
+        goal_post_width: U.ft(18.5)
       }
     }.freeze
 

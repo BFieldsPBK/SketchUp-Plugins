@@ -73,16 +73,23 @@ module FieldDesigner
       pts
     end
 
+    # SketchUp treats points within 1/1000" as identical, so drop
+    # consecutive points closer than that (with margin) — arcs meeting
+    # straight edges commonly land exactly on the edge's endpoint.
+    DEDUP_TOL = 0.002
+
     def self.dedup(points)
       out = []
       points.each do |p|
         prev = out.last
-        out << p unless prev && (prev[0] - p[0]).abs < 1e-6 && (prev[1] - p[1]).abs < 1e-6
+        out << p unless prev && (prev[0] - p[0]).abs < DEDUP_TOL &&
+                        (prev[1] - p[1]).abs < DEDUP_TOL
       end
       first = out.first
       last = out.last
       out.pop if out.size > 1 &&
-                 (first[0] - last[0]).abs < 1e-6 && (first[1] - last[1]).abs < 1e-6
+                 (first[0] - last[0]).abs < DEDUP_TOL &&
+                 (first[1] - last[1]).abs < DEDUP_TOL
       out
     end
 
@@ -147,14 +154,7 @@ module FieldDesigner
         rect(entities, map, bx - lw / 2.0, lw, bx + lw / 2.0, width - lw)
       end
 
-      # Goal, as a plan-view symbol: posts and net box behind the goal line.
-      if opts.fetch(:goals, true)
-        gw = rules[:goal_width] / 2.0
-        depth = Units.ft(2)
-        rect(entities, map, -depth, cy - gw - lw, 0, cy - gw)
-        rect(entities, map, -depth, cy + gw, 0, cy + gw + lw)
-        rect(entities, map, -depth - lw, cy - gw - lw, -depth, cy + gw + lw)
-      end
+      # Goals are built as 3D frames by the Goals module (see generator).
     end
 
     # Rectangular area open toward the goal line: two side stripes running

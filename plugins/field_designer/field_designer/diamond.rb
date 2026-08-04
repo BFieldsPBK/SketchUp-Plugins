@@ -138,6 +138,7 @@ module FieldDesigner
     end
 
     def self.face_at(entities, pts, z)
+      pts = Striping.dedup(pts)
       entities.add_face(pts.map { |x, y| Geom::Point3d.new(x, y, z) })
     end
 

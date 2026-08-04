@@ -24,9 +24,9 @@ One **Field Generator** button opens a dialog with:
   (9v9), High School (NFHS 110×65 yd), College (NCAA 115×75 yd), and
   Adult (FIFA international 105×68 m). Markings scale with the preset:
   center circle, penalty/goal areas, penalty marks and arcs, corner arcs,
-  and plan-view goal symbols.
+  and 3D goal frames (posts and crossbar).
 - **Football** — Youth (80-yard field) and Regulation (HS/College/Pro,
-  100 yd + two 10 yd end zones × 160 ft), with yard lines every 5 yards.
+  100 yd + two 10 yd end zones × 160 ft), with yard lines every 5 yards and 3D goal posts (10' crossbar, 20' uprights).
 - **Lacrosse** — Men/Boys (NCAA/NFHS 110×60 yd): goal creases,
   restraining lines, wing lines, midline and center X.
 - **Baseball / Softball** — Elementary playfield diamond (45' bases,
@@ -38,7 +38,7 @@ One **Field Generator** button opens a dialog with:
   infield and mound, foul lines, bases, pitcher's circle (softball),
   and a 6' outfield fence ribbon.
 - **Tennis** — USTA 78×36 ft doubles court with singles lines, service
-  boxes, center marks, two-tone playing surface and net band; generate
+  boxes, center marks, two-tone playing surface, and standing 3'6" nets with posts; generate
   a battery of 1–8 courts with the standard 12' spacing and 21'/12'
   clearances.
 - **Track wrap** (rectangular fields) — None, 400 m (8 lanes, World
@@ -96,7 +96,7 @@ install.
 ## Roadmap ideas
 
 - Field Designer: hash marks / yard numbers for football, lane stagger
-  markings and D-zones for the track, 3D goals and goal posts, backstops
+  markings and D-zones for the track, backstops
   and dugouts for diamonds, batter's boxes, women's lacrosse (120×70 yd
   with 8 m / 12 m arcs), field hockey.
 - Suite: an "About / versions" dialog listing installed office tools.

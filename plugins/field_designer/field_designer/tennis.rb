@@ -8,8 +8,6 @@ module FieldDesigner
   module Tennis
     LINE_WIDTH = 2.0
     PAD_Z = 0.005
-    NET_Z = 0.05
-    NET_WIDTH = 3.0
 
     def self.build(parent, rules, count, mats)
       count = [[count, 1].max, 8].min
@@ -83,12 +81,22 @@ module FieldDesigner
       rect(e, cl - lw - 4.0, cy - lw / 2.0, cl - lw, cy + lw / 2.0, z)
     end
 
-    # Net drawn as a dark band across the court plus the 3' post overhang.
+    # Standing net: a vertical mesh panel between posts 3' outside each
+    # doubles sideline, 3'6" high at the posts.
+    NET_HEIGHT = 42.0
+    POST = 3.0
+
     def self.net(e, rules, y0)
       x = rules[:court_length] / 2.0
       over = rules[:net_overhang]
-      rect(e, x - NET_WIDTH / 2.0, y0 - over,
-           x + NET_WIDTH / 2.0, y0 + rules[:court_width] + over, NET_Z)
+      ylo = y0 - over
+      yhi = y0 + rules[:court_width] + over
+
+      e.add_face([Geom::Point3d.new(x, ylo, 0), Geom::Point3d.new(x, yhi, 0),
+                  Geom::Point3d.new(x, yhi, NET_HEIGHT),
+                  Geom::Point3d.new(x, ylo, NET_HEIGHT)])
+      Goals.box(e, x - POST / 2, x + POST / 2, ylo - POST, ylo, 0, NET_HEIGHT)
+      Goals.box(e, x - POST / 2, x + POST / 2, yhi, yhi + POST, 0, NET_HEIGHT)
     end
 
     def self.rect(e, x0, y0, x1, y1, z)

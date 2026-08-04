@@ -106,11 +106,18 @@ module FieldDesigner
       elsif rules[:crease_radius]
         Striping.draw_lacrosse(lines.entities, rules)
       else
-        opts = { goals: data.fetch("goals", true),
-                 buildout: data.fetch("buildout", true) }
-        Striping.draw_soccer(lines.entities, rules, opts)
+        Striping.draw_soccer(lines.entities, rules,
+                             buildout: data.fetch("buildout", true))
       end
       Striping.paint(lines, mats[:line])
+
+      if data.fetch("goals", true)
+        if rules[:playing_length]
+          Goals.football(ents, rules, mats[:goal_post])
+        elsif rules[:goal_width]
+          Goals.soccer(ents, rules, mats[:line])
+        end
+      end
       group
     end
 
@@ -122,14 +129,16 @@ module FieldDesigner
         fence: material(model, "FD Fence", [52, 82, 60]),
         court: material(model, "FD Court", [62, 110, 165]),
         court_apron: material(model, "FD Court Apron", [96, 128, 100]),
-        net: material(model, "FD Net", [60, 60, 62]) }
+        net: material(model, "FD Net", [60, 60, 62], 0.55),
+        goal_post: material(model, "FD Goal Post", [235, 200, 60]) }
     end
 
-    def self.material(model, name, rgb)
+    def self.material(model, name, rgb, alpha = nil)
       existing = model.materials[name]
       return existing if existing
       mat = model.materials.add(name)
       mat.color = Sketchup::Color.new(*rgb)
+      mat.alpha = alpha if alpha
       mat
     end
   end

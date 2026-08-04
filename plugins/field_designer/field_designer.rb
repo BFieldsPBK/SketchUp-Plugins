@@ -12,7 +12,7 @@ module FieldDesigner
   unless const_defined?(:PLUGIN_ID)
     PLUGIN_ID = "field_designer".freeze
     PLUGIN_NAME = "Field Designer".freeze
-    VERSION = "0.2.0".freeze
+    VERSION = "0.2.1".freeze
   end
 
   unless file_loaded?(__FILE__)

@@ -17,6 +17,7 @@ module FieldDesigner
     striping
     track
     diamond
+    goals
     tennis
     generator
     dialog
