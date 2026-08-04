@@ -87,11 +87,17 @@
       </select>
       <span class="unit"></span>
     </div>
+    <div class="check">
+      <input type="checkbox" id="runoff" checked>
+      <label for="runoff">Sprint straight extensions (start + run-off)</label>
+    </div>
     <p class="hint">Tracks wrap rectangular fields (soccer, football,
     lacrosse) and are ignored for diamonds and tennis. Auto picks the
     smallest regulation track whose infield holds the selected field with
     2 m of clearance: 300 m (6 lanes) for small-sided fields, 400 m
-    (8 lanes, World Athletics standard) for full-size fields.</p>
+    (8 lanes, World Athletics standard) for full-size fields. Sprint
+    extensions stretch the home straight past the oval — 110 m hurdles
+    + 17 m run-off on the 400 m, 100 m dash + run-off on the 300 m.</p>
   </fieldset>
 
   <fieldset>
@@ -134,6 +140,7 @@
     send("generate", {
       preset: val("preset"),
       track: val("track"),
+      runoff: checked("runoff"),
       goals: checked("goals"),
       buildout: checked("buildout"),
       courts: val("courts"),

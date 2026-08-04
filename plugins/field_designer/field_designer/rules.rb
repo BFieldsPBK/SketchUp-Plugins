@@ -175,18 +175,26 @@ module FieldDesigner
       }
     }.freeze
 
+    # Sprint extensions stretch the home straight beyond the oval: a start
+    # area behind the common start plus the mandatory run-off past the
+    # finish (World Athletics: >= 3 m start clearance, >= 17 m run-off).
+    # The 400 m straight is sized for the 110 m hurdles
+    # (113 m - 84.39 m = 28.61 m start extension); the compact 300 m
+    # straight covers the 100 m dash (103 m - 67.38 m = 35.62 m).
     TRACKS = {
       "400" => {
         label: "400 m Track (8 lanes)",
         inside_radius: U.m(36.5), straight: U.m(84.39),
-        lanes: 8, lane_width: U.m(1.22)
+        lanes: 8, lane_width: U.m(1.22),
+        sprint_start: U.m(28.61), sprint_runoff: U.m(17)
       },
       "300" => {
         label: "300 m Track (6 lanes)",
         # 2 x 67.38 m straights + 2 curves at 26.0 m inside radius
         # (measured 0.30 m out from the inside edge) = 300 m.
         inside_radius: U.m(26.0), straight: U.m(67.38),
-        lanes: 6, lane_width: U.m(1.22)
+        lanes: 6, lane_width: U.m(1.22),
+        sprint_start: U.m(35.62), sprint_runoff: U.m(17)
       }
     }.freeze
 

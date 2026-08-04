@@ -85,7 +85,8 @@ module FieldDesigner
 
       if track
         Track.draw_infield(ents, track, cx, cy, mats[:grass])
-        Track.draw(ents, track, cx, cy, mats)
+        Track.draw(ents, track, cx, cy, mats,
+                   runoff: data.fetch("runoff", true))
       else
         apron = Units.parse_ft(data["apron"], DEFAULT_APRON)
         surface = ents.add_group

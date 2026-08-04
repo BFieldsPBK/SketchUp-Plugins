@@ -46,7 +46,10 @@ One **Field Generator** button opens a dialog with:
   (6 lanes, compact configuration), or **Auto**, which picks the smallest
   regulation track whose infield holds the field with 2 m of clearance —
   300 m for small-sided fields, 400 m for full-size soccer, football,
-  and lacrosse.
+  and lacrosse. The home straight extends past the oval by default with
+  a sprint start area and 17 m run-off (130 m total straight on the
+  400 m for the 110 m hurdles; 120 m on the 300 m for the 100 m dash),
+  with straight sprint-lane lines through the extensions.
 - **Overrides** — soccer length/width within a governing body's legal
   range, tennis battery count, and the apron margin used when no track
   is drawn.
